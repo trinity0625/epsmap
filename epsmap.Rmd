@@ -1,0 +1,70 @@
+---
+title: "eps mapping"
+author: "Hanna Yim"
+date: "10/20/2022"
+output:
+  html_document:
+    df_print: paged
+---
+# Install basic packages
+```{r}
+r = getOption("repos")
+r["CRAN"] = "http://cran.us.r-project.org"
+options(repos = r)
+install.packages("weatherData")
+install.packages("readxl")
+install.packages("tidyverse")
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+install.packages("pscl", repos = "https://cran.rstudio.com")
+setwd("~/Downloads")
+```
+
+# Install mapping packages
+```{r}
+install.packages("ggiraphExtra")
+library(ggiraphExtra)
+```
+
+# Install map packages
+```{r}
+devtools::install_github("cardiomoon/kormaps2014")
+library(kormaps2014)
+str(changeCode(kormap1))
+kormap1
+```
+
+```{r}
+install.packages("stringi")
+library(stringi)
+```
+
+
+```{r}
+str(korpop1)
+korpop1$name <- NA
+library(dplyr)
+korpop1$name <- iconv(korpop1$name, "UTF-8", "CP949")
+ggChoropleth(data = korpop1,
+             aes(fill = 'pop',
+                 map_id = code,
+                 tooltip = name),
+             map = kormap1,
+             interactive = T)
+```
+
+
+```{r}
+library(kormaps2014)
+korpop1
+library(dplyr)
+install.packages("ggthemes")
+library(ggthemes)
+epsmap <- read_excel("eps_map.xlsx")
+epsmap
+epsmap$code <- iconv(epsmap$code, "UTF-8", "CP949")
+ggChoropleth(data = epsmap, aes(fill = Migrants, map_id = code, tooltip = region), map = kormap1, interactive = T, palette = 'Blues', color = 'black', title = "Migrant workers in Korea (as of 2022)",
+             digits = 1) 
+```
+
